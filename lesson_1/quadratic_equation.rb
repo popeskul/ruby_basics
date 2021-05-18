@@ -1,10 +1,10 @@
-puts "Введите коэффициента a"
+puts 'Введите коэффициента a'
 coefficient_a = gets.to_f
 
-puts "Введите коэффициента b"
+puts 'Введите коэффициента b'
 coefficient_b = gets.to_f
 
-puts "Введите коэффициента c"
+puts 'Введите коэффициента c'
 coefficient_c = gets.to_f
 
 discriminant = coefficient_b**2 - 4 * coefficient_a * coefficient_c

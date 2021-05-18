@@ -1,8 +1,8 @@
-puts "Hello friend!"
-puts "What is your name?"
+puts 'Hello friend!'
+puts 'What is your name?'
 username = gets.chomp
 
-puts "What is your height?"
+puts 'What is your height?'
 user_height = gets.chomp
 
 puts "Name: #{username.capitalize}"
@@ -13,7 +13,7 @@ perfect_weight =
   if calculate_perfect_weight > 0
     calculate_perfect_weight.to_i
   else 
-    "You are at your ideal weight"
+    'You are at your ideal weight'
   end
 
 puts "Ideal weight: #{perfect_weight}"
