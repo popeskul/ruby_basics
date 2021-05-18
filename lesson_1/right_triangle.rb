@@ -11,7 +11,7 @@ sides << gets.chomp.to_f
 
 cathet_1, cathet2, hypotenuse = sides.sort
 
-is_equilateral_triangle = sides.map { |i| i == hypotenuse.max }.all?
+is_equilateral_triangle = sides.map { |i| i == hypotenuse }.all?
 
 # теорема пифагора
 if is_equilateral_triangle
