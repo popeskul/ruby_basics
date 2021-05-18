@@ -1,2 +1,2 @@
 steppers = []
-(10..100).step(5) { |i| steppers << i }
+(10..100).step(5) { |num| steppers << num }

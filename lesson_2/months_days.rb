@@ -13,4 +13,4 @@ months = {
   december: 31
 }
 
-months.each { |k,v| puts "#{k} - #{v}" if v == 30 }
+months.each { |month, days| puts "#{month, days} - #{days}" if days == 30 }

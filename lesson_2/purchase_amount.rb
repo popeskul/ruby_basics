@@ -19,8 +19,8 @@ end
 
 price_total = 0
 
-shop.each do |k, v|
-  local_price = v[:price] * v[:count]
+shop.each do |k, itemDetails|
+  local_price = itemDetails[:price] * itemDetails[:count]
   price_total += local_price
 end
 
