@@ -9,11 +9,7 @@ sides << gets.chomp.to_f
 puts 'Введите третью сторону треугольника'
 sides << gets.chomp.to_f
 
-sides.sort!
-
-hypotenuse = sides.max
-cathet_1 = sides[0]
-cathet_2 = sides[1]
+cathet_1, cathet2, hypotenuse = sides.sort
 
 is_equilateral_triangle = sides.map { |i| i == hypotenuse.max }.all?
 
