@@ -17,11 +17,9 @@ while shop_name != 'стоп'
   shop_name = gets.chomp
 end
 
-price_total = 0
-
-shop.each do |k, itemDetails|
+price_total = shop.reduce(0) do |sum, (_, itemDetails)|
   local_price = itemDetails[:price] * itemDetails[:count]
-  price_total += local_price
+  sum += local_price
 end
 
 puts shop
