@@ -1,13 +1,13 @@
-# type - cargo, passenger
-
 class Train
-  attr_reader :speed, :wagons
+  attr_reader :speed, :wagons, :train_num
 
-  def initialize(train_num, type)
-    @train_num = train_num
-    @type      = type
-    @wagons    = []
-    @speed     = 0
+  TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }
+
+  def initialize(train_num, type_train)
+    @train_num  = train_num
+    @type_train = type_train
+    @wagons     = []
+    @speed      = 0
   end
 
   def gain_speed(speed)
@@ -20,7 +20,7 @@ class Train
 
   def add_wagon(wagon)
     speed_stop
-    @wagons << wagon
+    @wagons << wagon if wagon.type_wagon == type_train
   end
 
   def delete_wagon(wagon)
@@ -38,16 +38,6 @@ class Train
     @route.stations[@station_index]
   end
 
-  def route_station_next
-    @route.stations[@station_index + 1]
-  end
-
-  def route_station_previous
-    if @station_index > 0
-      @route.stations[@station_index - 1]
-    end
-  end
-
   def route_shift_forward
     if route_station_next
       current_station.send_train(self)
@@ -61,6 +51,21 @@ class Train
       current_station.send_train(self)
       @station_index -= 1
       current_station.add_train(self)
+    end
+  end
+
+  private
+  # метод не может быть вызван вне класса
+  # потомка также не нужно знать
+  def route_station_next
+    @route.stations[@station_index + 1]
+  end
+
+  # метод не может быть вызван вне класса
+  # потомка также не нужно знать
+  def route_station_previous
+    if @station_index > 0
+      @route.stations[@station_index - 1]
     end
   end
 end
