@@ -34,6 +34,8 @@ class Interface
     end
   end
 
+  private
+
   def menu_messages
     puts %q(
     1 - Станции
@@ -132,8 +134,6 @@ class Interface
     
     menu_wagons
   end
-
-  private
 
   def create_station
     print 'Для создания станции введите название: '
