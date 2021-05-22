@@ -1,5 +1,11 @@
+require_relative 'manufacturer'
+
 class Train
+  include Manufacturer
+
   attr_reader :speed, :wagons, :train_num
+
+  @@trains = []
 
   TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }
 
@@ -8,6 +14,11 @@ class Train
     @type_train = type_train
     @wagons     = []
     @speed      = 0
+    @@trains << self
+  end
+
+  def self.find(train_num)
+    @@trains.filter { |train| train.train_num == train_num }
   end
 
   def gain_speed(speed)
