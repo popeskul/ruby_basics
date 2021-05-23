@@ -8,7 +8,7 @@ class Train
   attr_reader :speed, :wagons, :train_num
   
   TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }
-  
+
   TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{3}/
   TRAIN_TYPE_FORMAT = /(cargo|passenger)/
 
@@ -17,7 +17,7 @@ class Train
   def initialize(train_num, type_train)
     @train_num  = train_num
     @type_train = type_train
-    valid?
+    validate?
     @wagons     = []
     @speed      = 0
     @@trains << self
@@ -83,7 +83,7 @@ class Train
     end
   end
 
-  def valid?
+  def validate?
     raise 'Ошибка! Введите номер поезда в таком формате: три буквы/три цифры, проблем или дефис и две буквы/дву цифры' if train_num !~ TRAIN_NUM_FORMAT
     raise 'Ошибка! Введите корректный тип поезда: cargo или passenger' if type_train !~ TRAIN_TYPE_FORMAT
   end
