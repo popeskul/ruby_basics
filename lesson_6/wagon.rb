@@ -1,4 +1,8 @@
+require_relative 'manufacturer'
+
 class Wagon
+  include Manufacturer
+
   attr_reader :type_wagon
 
   TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }

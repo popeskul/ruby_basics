@@ -1,5 +1,13 @@
+require_relative 'manufacturer'
+require_relative 'instance_counter'
+
 class Train
+  include Manufacturer
+  include InstanceCounter
+
   attr_reader :speed, :wagons, :train_num
+
+  @@trains = []
 
   TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }
 
@@ -8,6 +16,12 @@ class Train
     @type_train = type_train
     @wagons     = []
     @speed      = 0
+    @@trains << self
+    register_instance
+  end
+
+  def self.find(train_num)
+    @@trains.select { |train| train.train_num == train_num }
   end
 
   def gain_speed(speed)
