@@ -5,9 +5,12 @@ class Route
 
   attr_reader :name, :stations
 
+  NAME_FORMAT = /^\S/
+
   def initialize(name, station_start, station_end)
     @name = name
     @stations = [station_start, station_end]
+    validate?
     register_instance
   end
 
@@ -17,5 +20,11 @@ class Route
 
   def delete_station(station)
     @stations.delete(station)
+  end
+
+  private
+
+  def validate?
+    raise 'Имя должно состоять из одного символа и без пробелов' if name !~ NAME_FORMAT
   end
 end
