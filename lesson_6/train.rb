@@ -21,7 +21,7 @@ class Train
   end
 
   def self.find(train_num)
-    @@trains.filter { |train| train.train_num == train_num }
+    @@trains.select { |train| train.train_num == train_num }
   end
 
   def gain_speed(speed)
