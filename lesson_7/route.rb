@@ -1,13 +1,17 @@
 require_relative 'instance_counter'
+require_relative 'validation'
 
 class Route
   include InstanceCounter
 
   attr_reader :name, :stations
 
+  NAME_FORMAT = /^\S/
+
   def initialize(name, station_start, station_end)
     @name = name
     @stations = [station_start, station_end]
+    validate?
     register_instance
   end
 
@@ -17,5 +21,11 @@ class Route
 
   def delete_station(station)
     @stations.delete(station)
+  end
+
+  private
+
+  def validate?
+    raise ValidationError, 'Имя должно состоять из одного символа и без пробелов' if name !~ NAME_FORMAT
   end
 end

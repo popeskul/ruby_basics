@@ -1,19 +1,24 @@
 require_relative 'manufacturer'
 require_relative 'instance_counter'
+require_relative 'validation'
 
 class Train
   include Manufacturer
   include InstanceCounter
 
   attr_reader :speed, :wagons, :train_num
+  
+  TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }
+
+  TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{3}/
+  TRAIN_TYPE_FORMAT = /(cargo|passenger)/
 
   @@trains = []
-
-  TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }
 
   def initialize(train_num, type_train)
     @train_num  = train_num
     @type_train = type_train
+    validate?
     @wagons     = []
     @speed      = 0
     @@trains << self
@@ -69,17 +74,18 @@ class Train
   end
 
   private
-  # метод не может быть вызван вне класса
-  # потомка также не нужно знать
   def route_station_next
     @route.stations[@station_index + 1]
   end
 
-  # метод не может быть вызван вне класса
-  # потомка также не нужно знать
   def route_station_previous
     if @station_index > 0
       @route.stations[@station_index - 1]
     end
+  end
+
+  def validate?
+    raise ValidationError 'Ошибка! Введите номер поезда в таком формате: три буквы/три цифры, проблем или дефис и две буквы/дву цифры' if train_num !~ TRAIN_NUM_FORMAT
+    raise ValidationError 'Ошибка! Введите корректный тип поезда: cargo или passenger' if type_train !~ TRAIN_TYPE_FORMAT
   end
 end

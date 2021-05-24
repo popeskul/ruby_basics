@@ -8,6 +8,7 @@ require_relative 'passenger_wagon'
 class Interface
   TYPE_CARGO = 'cargo'
   TYPE_PASS = 'pass'
+  ATTEMPTS_ON_ERROR = 4
 
   def initialize
     @stations = []
@@ -143,82 +144,53 @@ class Interface
   end
 
   def create_train
-    print 'Создайте номер поезда: '
-    train_num = gets.chomp
+    attempt = ATTEMPTS_ON_ERROR
+    begin
+      print 'Создайте номер поезда: '
+      train_num = gets.chomp
 
-    print "Какой тип поезда #{TYPE_PASS} или #{TYPE_CARGO}: "
-    train_type = gets.chomp
+      print "Какой тип поезда #{TYPE_PASS} или #{TYPE_CARGO}: "
+      train_type = gets.chomp
 
-    if train_type.include?(TYPE_PASS) || train_type.include?(TYPE_CARGO)
       train = train_type.include?(TYPE_PASS) ? PassengerTrain.new(train_num) : CargoTrain.new(train_num)
       @trains.push(train)
-
       puts 'Поезд создан'
-    else
-      puts 'Ошибка создании поезда!'
-
-      loop do
-        puts 'Повторить создание поезда?'
-
-        puts %q(
-        1 - да
-        0 - нет, вернуться в предыдущее меню)
-
-        user_choice = gets.chomp.to_i
-
-        case user_choice
-          when 1 then create_train
-          when 0 then menu_trains
-          else puts 'Повторите ввод'
-        end
-      end
+    rescue Exception => e
+      attempt -= 1
+      puts e.message
+      puts "Осталось попыток - #{attempt}"
+      retry if attempt > 0
     end
   end
 
   def create_route
-    print 'Создайте название нового маршрута: '
-    route_name = gets.chomp
+    attempt = ATTEMPTS_ON_ERROR
+    begin
+      print 'Создайте название нового маршрута: '
+      route_name = gets.chomp
 
-    puts 'Cписок станций:'
+      puts 'Cписок станций:'
+      list_stations
 
-    list_stations
+      print 'Выберите из списка название для Первой станция маршрута: '
+      first_station_title = gets.chomp
+    
+      first_station = find_station(first_station_title)
 
-    print 'Выберите из списка название для Первой станция маршрута: '
+      puts 'Cписок станций:'
+      list_stations
 
-    first_station_title = gets.chomp
+      print 'Выберите из списка название для Второй станция маршрута: '
+      second_station_title = gets.chomp
 
-    first_station = find_station(first_station_title)
-
-    puts 'Cписок станций:'
-
-    list_stations
-
-    print 'Выберите из списка название для Второй станция маршрута: '
-    second_station_title = gets.chomp
-
-    second_station = find_station(second_station_title)
-
-    if first_station_title.nil? || second_station.nil?
-      puts 'Ошибка создании маршрута!'
-
-      loop do
-        puts 'Повторить создание маршрута?'
-
-        puts %q(
-        1 - да
-        0 - нет, вернуться в предыдущее меню)
-
-        user_choice = gets.chomp.to_i
-
-        case user_choice
-          when 1 then create_route
-          when 0 then menu_routes
-          else puts 'Повторите ввод'
-        end
-      end
-    else
+      second_station = find_station(second_station_title)
       @routes << Route.new(route_name, first_station, second_station)
       puts 'Маршрут создан'
+    rescue Exception => e
+      attempt -= 1
+      puts e.message
+      puts "Осталось попыток - #{attempt}"
+      retry if attempt > 0
     end
   end
 
@@ -440,33 +412,21 @@ class Interface
   end
 
   def prev_station
-    list_trains
+    attempt = ATTEMPTS_ON_ERROR
+    begin
+      list_trains
 
-    puts 'Выберите поезд для того чтобы узнать предыдущую станцию: '
-    user_train = gets.chomp
-    train = find_train(user_train)
+      puts 'Выберите поезд для того чтобы узнать предыдущую станцию: '
+      user_train = gets.chomp
+      train = find_train(user_train)
 
-    if train.nil?
-      puts 'Не верный поезд'
-
-      loop do
-        puts 'Повторить?'
-
-        puts %q(
-        1 - да
-        0 - нет, вернуться в предыдущее меню)
-
-        user_choice = gets.chomp
-
-        case user_choice.to_i
-          when 1 then prev_station
-          when 0 then menu_routes
-          else puts 'Повторите ввод'
-        end
-      end
-    else
       prev_station = train.route_shift_backward
       puts prev_station
+    rescue Exception => e
+      attempt -= 1
+      puts e.message
+      puts "Осталось попыток - #{attempt}"
+      retry if attempt > 0
     end
   end
 
@@ -481,31 +441,14 @@ class Interface
   end
 
   def add_wagon
-    list_trains
+    attempt = ATTEMPTS_ON_ERROR
+    begin
+      list_trains
 
-    puts 'Выберите поезд которому хотите добавить вагон'
-    user_train = gets.chomp
-    train = find_train(user_train)
+      puts 'Выберите поезд которому хотите добавить вагон'
+      user_train = gets.chomp
+      train = find_train(user_train)
 
-    if train.nil?
-      puts 'Не верный поезд'
-
-      loop do
-        puts 'Повторить?'
-
-        puts %q(
-        1 - да
-        0 - нет, вернуться в предыдущее меню)
-
-        user_choice = gets.chomp
-
-        case user_choice.to_i
-          when 1 then add_wagon
-          when 0 then menu_wagons
-          else puts 'Повторите ввод'
-        end
-      end
-    else
       puts "Выберите тип нового вагона: #{TYPE_PASS} или #{TYPE_CARGO}"
       wagon_type = gets.chomp
       wagon = create_wagon(wagon_type)
@@ -513,35 +456,23 @@ class Interface
       train.add_wagon(wagon)
 
       puts 'Вагон создан и добавлен к поезду'
+    rescue Exception => e
+      attempt -= 1
+      puts e.message
+      puts "Осталось попыток - #{attempt}"
+      retry if attempt > 0
     end
   end
 
   def remove_wagon
-    list_trains
+    attempt = ATTEMPTS_ON_ERROR
+    begin
+      list_trains
 
-    puts 'Выберите поезд у которго хотите удалить вагон'
-    user_train = gets.chomp
-    train = find_train(user_train)
+      puts 'Выберите поезд у которго хотите удалить вагон'
+      user_train = gets.chomp
+      train = find_train(user_train)
 
-    if train.nil?
-      puts 'Не верный поезд'
-
-      loop do
-        puts 'Повторить?'
-
-        puts %q(
-        1 - да
-        0 - нет, вернуться в предыдущее меню)
-
-        user_choice = gets.chomp
-
-        case user_choice.to_i
-          when 1 then remove_wagon
-          when 0 then menu_wagons
-          else puts 'Повторите ввод'
-        end
-      end
-    else
       list_wagons(train.wagons)
       puts 'Выберите вагон для удаления'
       wagon_name = gets.chomp.to_i
@@ -549,6 +480,11 @@ class Interface
       train.delete_wagon(wagon_name)
       
       puts 'Вагон отцеплен от поезда'
+    rescue Exception => e
+      attempt -= 1
+      puts e.message
+      puts "Осталось попыток - #{attempt}"
+      retry if attempt > 0
     end
   end
 
