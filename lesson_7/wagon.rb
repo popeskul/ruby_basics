@@ -1,4 +1,5 @@
 require_relative 'manufacturer'
+require_relative 'validation'
 
 class Wagon
   include Manufacturer
@@ -15,6 +16,6 @@ class Wagon
   end
 
   def validate?
-    raise 'Ошибка! Введите корректный тип вагона: cargo или passenger' if type_train !~ WAGON_TYPE_FORMAT
+    raise ValidationError 'Ошибка! Введите корректный тип вагона: cargo или passenger' if type_train !~ WAGON_TYPE_FORMAT
   end
 end

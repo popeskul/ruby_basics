@@ -1,5 +1,6 @@
 require_relative 'manufacturer'
 require_relative 'instance_counter'
+require_relative 'validation'
 
 class Train
   include Manufacturer
@@ -84,7 +85,7 @@ class Train
   end
 
   def validate?
-    raise 'Ошибка! Введите номер поезда в таком формате: три буквы/три цифры, проблем или дефис и две буквы/дву цифры' if train_num !~ TRAIN_NUM_FORMAT
-    raise 'Ошибка! Введите корректный тип поезда: cargo или passenger' if type_train !~ TRAIN_TYPE_FORMAT
+    raise ValidationError 'Ошибка! Введите номер поезда в таком формате: три буквы/три цифры, проблем или дефис и две буквы/дву цифры' if train_num !~ TRAIN_NUM_FORMAT
+    raise ValidationError 'Ошибка! Введите корректный тип поезда: cargo или passenger' if type_train !~ TRAIN_TYPE_FORMAT
   end
 end

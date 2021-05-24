@@ -1,4 +1,5 @@
 require_relative 'instance_counter'
+require_relative 'validation'
 
 class Station
   include InstanceCounter
@@ -37,6 +38,6 @@ class Station
   private
 
   def validate?
-    raise 'Имя должно состоять из одного символа и без пробелов' if name !~ NAME_FORMAT
+    raise ValidationError 'Имя должно состоять из одного символа и без пробелов' if name !~ NAME_FORMAT
   end
 end
