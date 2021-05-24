@@ -38,6 +38,6 @@ class Station
   private
 
   def validate?
-    raise ValidationError 'Имя должно состоять из одного символа и без пробелов' if name !~ NAME_FORMAT
+    raise ValidationError, 'Имя должно состоять из одного символа и без пробелов' if name !~ NAME_FORMAT
   end
 end

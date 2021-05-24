@@ -16,6 +16,6 @@ class Wagon
   end
 
   def validate?
-    raise ValidationError 'Ошибка! Введите корректный тип вагона: cargo или passenger' if type_train !~ WAGON_TYPE_FORMAT
+    raise ValidationError, 'Ошибка! Введите корректный тип вагона: cargo или passenger' if type_train !~ WAGON_TYPE_FORMAT
   end
 end
