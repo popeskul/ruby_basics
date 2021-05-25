@@ -6,10 +6,6 @@ class PassengerWagon < Wagon
   end
 
   def take_place
-    if free_places >= 1 && @places_occupied < @all_places
-      @places_occupied += 1
-    else
-      puts 'Извините, нет свобоодного места.'
-    end
+    @places_occupied += 1 if free_places >= 1 && @places_occupied < @all_places
   end
 end

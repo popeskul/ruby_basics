@@ -26,7 +26,7 @@ class Train
   end
 
   def self.find(train_num)
-    @@trains.select { |train| train.train_num == @train_num }
+    @@trains.select { |train| train.train_num == train_num }
   end
 
   def gain_speed(speed)
@@ -74,13 +74,7 @@ class Train
   end
 
   def each_wagon
-    if block_given?
-      @wagons.each do |wagon|
-        yield(wagon)
-      end
-    else
-      puts 'Ошибка'
-    end
+    @wagons.each { |wagon| yield(wagon) } if block_given?
   end
 
   private
