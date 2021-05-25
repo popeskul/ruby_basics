@@ -10,7 +10,7 @@ class Train
   
   TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }
 
-  TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{3}/
+  TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{2}/
   TRAIN_TYPE_FORMAT = /(cargo|passenger)/
 
   @@trains = []
@@ -39,7 +39,7 @@ class Train
 
   def add_wagon(wagon)
     speed_stop
-    @wagons << wagon if wagon.type_wagon == type_train
+    @wagons << wagon if wagon.type_wagon == @type_train
   end
 
   def delete_wagon(wagon)
@@ -73,7 +73,12 @@ class Train
     end
   end
 
+  def each_wagon
+    @wagons.each { |wagon| yield(wagon) } if block_given?
+  end
+
   private
+  
   def route_station_next
     @route.stations[@station_index + 1]
   end
@@ -85,7 +90,7 @@ class Train
   end
 
   def validate?
-    raise ValidationError 'Ошибка! Введите номер поезда в таком формате: три буквы/три цифры, проблем или дефис и две буквы/дву цифры' if train_num !~ TRAIN_NUM_FORMAT
-    raise ValidationError 'Ошибка! Введите корректный тип поезда: cargo или passenger' if type_train !~ TRAIN_TYPE_FORMAT
+    raise ValidationError, 'Ошибка! Введите номер поезда в таком формате: три буквы/три цифры, проблем или дефис и две буквы/дву цифры' if @train_num !~ TRAIN_NUM_FORMAT
+    raise ValidationError, 'Ошибка! Введите корректный тип поезда: cargo или passenger' if @type_train !~ TRAIN_TYPE_FORMAT
   end
 end

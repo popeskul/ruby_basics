@@ -35,9 +35,13 @@ class Station
     @trains.delete(train)
   end
 
+  def each_train
+    @trains.each { |train| yield(train) } if block_given?
+  end
+
   private
 
   def validate?
-    raise ValidationError 'Имя должно состоять из одного символа и без пробелов' if name !~ NAME_FORMAT
+    raise ValidationError, 'Ошибка! Имя должно состоять из одного символа и без пробелов' if @name !~ NAME_FORMAT
   end
 end

@@ -4,6 +4,7 @@ require_relative 'cargo_train'
 require_relative 'passenger_train'
 require_relative 'cargo_wagon'
 require_relative 'passenger_wagon'
+require_relative 'validation'
 
 class Interface
   TYPE_CARGO = 'cargo'
@@ -118,21 +119,24 @@ class Interface
   end
 
   def menu_wagons
-    puts %q(Меню вагона:
+    puts 'Меню вагона:
     1 - Создать и добавить вагон
     2 - Отцепить вагон
-    0 - Вернуться в меню)
-
+    3 - Информация о вагоне
+    4 - Занять место
+    0 - Вернуться в меню'
     puts 'Что хотите сделать? Введите цифру'
     user_choice = gets.chomp
 
     case user_choice.to_i
-      when 1 then add_wagon
-      when 2 then remove_wagon
-      when 0 then user_interface
-      else puts 'Повторите ввод'
+    when 1 then add_wagon
+    when 2 then remove_wagon
+    when 3 then wagon_info
+    when 4 then add_place
+    when 0 then user_interface
+    else puts 'Повторите ввод'
     end
-    
+
     menu_wagons
   end
 
@@ -486,6 +490,76 @@ class Interface
       puts "Осталось попыток - #{attempt}"
       retry if attempt > 0
     end
+  end
+
+  def wagon_info
+    attempt = 4
+    begin
+      list_trains
+      puts 'Выберите поезд в котором хотите посмотреть места'
+      user_train = gets.chomp
+      train = find_train(user_train)
+      raise ValidationError, 'Неверно название поезда' if train.nil?
+
+      list_wagons(train.wagons)
+      puts 'Выберите из списка вагон'
+      user_wagon = gets.chomp.to_i
+      wagon = find_wagon(train.wagons, user_wagon)
+      raise ValidationError, 'Неверно название вагона' if wagon.nil?
+
+      puts "В этом вагоне #{wagon.all_places} мест"
+      puts "Свободно #{wagon.free_places}"
+      puts ValidationError, "Занято #{wagon.places_occupied}"
+    rescue StandardError => e
+      attempt -= 1
+      puts e.message
+      puts "Осталось попыток - #{attempt}"
+      retry if attempt > 0
+    end
+  end
+
+  def add_place
+    attempt = 4
+    begin
+      list_trains
+      puts 'Выберите поезд в котором хотите занять место или объем'
+      user_train = gets.chomp
+      train = find_train(user_train)
+      raise ValidationError, 'Неверно название поезд' if train.nil?
+
+      list_wagons(train.wagons)
+      puts 'Выберите из списка вагон в котором хотите занять место'
+      user_wagon = gets.chomp.to_i
+
+      wagon = find_wagon(train.wagons, user_wagon)
+      raise ValidationError, 'Неверно название вагона' if wagon.nil?
+    rescue StandardError => e
+      attempt -= 1
+      puts e.message
+      puts "Осталось попыток - #{attempt}"
+      retry if attempt > 0
+    end
+
+    if train.class == PassengerTrain
+      wagon.take_place
+    else
+      attempt = 4
+      begin
+        puts "Сейчас в грузовом отсеке свободно #{wagon.free_places}"
+        puts 'Сколько хотите добавить?'
+        user_place = gets.chomp.to_i
+
+        raise ValidationError, "Ошибка! Сейчас - свободно #{wagon.free_places}" if user_place > wagon.free_places
+        wagon.take_place(user_place)
+      rescue StandardError => e
+        attempt -= 1
+        puts e.message
+        puts "Осталось попыток - #{attempt}"
+        retry if attempt > 0
+      end
+    end
+
+    puts "Теперь в этомвагоне свободно #{wagon.free_places}"
   end
 
   def list_stations
