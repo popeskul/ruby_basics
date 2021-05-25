@@ -7,13 +7,11 @@ class Train
   include InstanceCounter
 
   attr_reader :speed, :wagons, :train_num
-  
-  TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }
 
-  TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{2}/
-  TRAIN_TYPE_FORMAT = /(cargo|passenger)/
+  TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }.freeze
 
-  @@trains = []
+  TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{2}/.freeze
+  TRAIN_TYPE_FORMAT = /(cargo|passenger)/.freeze
 
   def initialize(train_num, type_train)
     @train_num  = train_num
@@ -21,12 +19,17 @@ class Train
     validate?
     @wagons     = []
     @speed      = 0
-    @@trains << self
+    self.class.trains ||= []
+    self.class.trains << self
     register_instance
   end
 
+  def self.trains
+    @trains ||= []
+  end
+
   def self.find(train_num)
-    @@trains.select { |train| train.train_num == train_num }
+    @trains.select { |train| train.train_num == train_num }
   end
 
   def gain_speed(speed)
@@ -58,39 +61,43 @@ class Train
   end
 
   def route_shift_forward
-    if route_station_next
-      current_station.send_train(self)
-      @station_index += 1
-      current_station.add_train(self)
-    end
+    return unless route_station_next
+
+    current_station.send_train(self)
+    @station_index += 1
+    current_station.add_train(self)
   end
 
   def route_shift_backward
-    if route_station_previous
-      current_station.send_train(self)
-      @station_index -= 1
-      current_station.add_train(self)
-    end
+    return unless route_station_previous
+
+    current_station.send_train(self)
+    @station_index -= 1
+    current_station.add_train(self)
   end
 
-  def each_wagon
-    @wagons.each { |wagon| yield(wagon) } if block_given?
+  def each_wagon(&block)
+    @wagons.each(&block) if block_given?
   end
 
   private
-  
+
   def route_station_next
     @route.stations[@station_index + 1]
   end
 
   def route_station_previous
-    if @station_index > 0
-      @route.stations[@station_index - 1]
-    end
+    @route.stations[@station_index - 1].positive?
   end
 
   def validate?
-    raise ValidationError, 'Ошибка! Введите номер поезда в таком формате: три буквы/три цифры, проблем или дефис и две буквы/дву цифры' if @train_num !~ TRAIN_NUM_FORMAT
-    raise ValidationError, 'Ошибка! Введите корректный тип поезда: cargo или passenger' if @type_train !~ TRAIN_TYPE_FORMAT
+    if @train_num !~ TRAIN_NUM_FORMAT
+      raise ValidationError,
+            'Ошибка! Введите номер поезда в таком формате: три буквы/три цифры, проблем или дефис и две буквы/дву цифры'
+    end
+
+    return unless @type_train !~ TRAIN_TYPE_FORMAT
+
+    raise ValidationError, 'Ошибка! Введите корректный тип поезда: cargo или passenger'
   end
 end
