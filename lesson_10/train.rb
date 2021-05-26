@@ -1,6 +1,6 @@
-require_relative 'manufacturer'
-require_relative 'instance_counter'
-require_relative 'validation'
+require_relative 'modules/manufacturer'
+require_relative 'modules/instance_counter'
+require_relative 'modules/validation'
 
 class Train
   include Manufacturer

@@ -1,5 +1,5 @@
 require_relative 'train'
-require_relative 'accessors'
+require_relative 'modules/accessors'
 
 class CargoTrain < Train
   include Accessors
