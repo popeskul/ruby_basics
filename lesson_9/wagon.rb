@@ -6,7 +6,7 @@ class Wagon
 
   attr_reader :type_wagon, :all_places, :places_occupied
 
-  WAGON_TYPE_FORMAT = /(cargo|passenger)/.freeze
+  WAGON_TYPE_FORMAT = /(cargo|passenger)/
 
   TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }.freeze
 
