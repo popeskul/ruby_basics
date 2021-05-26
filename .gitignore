@@ -3,6 +3,7 @@
 
 .DS_Store
 .idea/
+.rubocop.yml
 
 # CMake
 cmake-build-*/
