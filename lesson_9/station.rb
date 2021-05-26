@@ -3,24 +3,22 @@ require_relative 'validation'
 
 class Station
   include InstanceCounter
-  
+
   attr_reader :name, :trains
 
-  NAME_FORMAT = /^\S/
-
-  @@all_stations = []
+  NAME_FORMAT = /^\S/.freeze
 
   def initialize(name)
     @name = name
     validate?
     @trains = []
-    @@all_stations << self
+    self.class.all ||= []
+    self.class.all << self
     register_instance
   end
 
   def self.all
-    # ObjectSpace.each_object(self).to_a - alternative solution
-    @@all_stations
+    @all ||= []
   end
 
   def add_train(train)
@@ -35,8 +33,8 @@ class Station
     @trains.delete(train)
   end
 
-  def each_train
-    @trains.each { |train| yield(train) } if block_given?
+  def each_train(&block)
+    @trains.each(&block) if block_given?
   end
 
   private

@@ -6,7 +6,7 @@ class Route
 
   attr_reader :name, :stations
 
-  NAME_FORMAT = /^\S/
+  NAME_FORMAT = /^\S/.freeze
 
   def initialize(name, station_start, station_end)
     @name = name
