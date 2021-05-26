@@ -31,7 +31,7 @@ module Accessors
       end
 
       define_method("#{name}=".to_sym) do |value|
-        raise ValidationError, "Incorrect class of #{name} value!" unless value.class == class_name
+        raise StandardError, "Incorrect class of #{name} value!" unless value.class == class_name
         instance_variable_set("@#{name}".to_sym, value)
       end
     end

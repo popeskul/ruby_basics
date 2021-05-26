@@ -5,18 +5,24 @@ require_relative 'modules/validation'
 class Train
   include Manufacturer
   include InstanceCounter
+  include Validation
+
+  TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }.freeze
+  TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{2}/
+  TRAIN_TYPE_FORMAT = /(cargo|passenger)/
 
   attr_reader :speed, :wagons, :train_num
 
-  TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }.freeze
+  validate :train_num, :presence
+  validate :train_num, :format, TRAIN_NUM_FORMAT
 
-  TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{2}/
-  TRAIN_TYPE_FORMAT = /(cargo|passenger)/
+  validate :type_train, :presence
+  validate :type_train, :format, TRAIN_TYPE_FORMAT
 
   def initialize(train_num, type_train)
     @train_num  = train_num
     @type_train = type_train
-    validate?
+    validate!
     @wagons     = []
     @speed      = 0
     self.class.trains ||= []
@@ -88,16 +94,5 @@ class Train
 
   def route_station_previous
     @route.stations[@station_index - 1].positive?
-  end
-
-  def validate?
-    if @train_num !~ TRAIN_NUM_FORMAT
-      raise ValidationError,
-            'Ошибка! Введите номер поезда в таком формате: три буквы/три цифры, проблем или дефис и две буквы/дву цифры'
-    end
-
-    return unless @type_train !~ TRAIN_TYPE_FORMAT
-
-    raise ValidationError, 'Ошибка! Введите корректный тип поезда: cargo или passenger'
   end
 end
