@@ -6,7 +6,7 @@ class Station
 
   attr_reader :name, :trains
 
-  NAME_FORMAT = /^\S/.freeze
+  NAME_FORMAT = /^\S/
 
   def initialize(name)
     @name = name

@@ -10,8 +10,8 @@ class Train
 
   TYPE = { CARGO: 'cargo', PASSENGER: 'passenger' }.freeze
 
-  TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{2}/.freeze
-  TRAIN_TYPE_FORMAT = /(cargo|passenger)/.freeze
+  TRAIN_NUM_FORMAT = /^\w{3}[- ]\w{2}/
+  TRAIN_TYPE_FORMAT = /(cargo|passenger)/
 
   def initialize(train_num, type_train)
     @train_num  = train_num
