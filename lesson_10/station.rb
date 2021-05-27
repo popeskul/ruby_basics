@@ -1,16 +1,25 @@
-require_relative 'instance_counter'
-require_relative 'validation'
+require_relative 'modules/instance_counter'
+require_relative 'modules/validation'
+require_relative 'modules/accessors'
 
 class Station
   include InstanceCounter
-
-  attr_reader :name, :trains
+  include Accessors
+  include Validation
 
   NAME_FORMAT = /^\S/
 
+  attr_reader :name, :trains
+
+  attr_accessor_with_history :first, :last
+  strong_attr_accessor :strong, String
+
+  validate :name, :presence
+  validate :name, :format, NAME_FORMAT
+
   def initialize(name)
     @name = name
-    validate?
+    validate!
     @trains = []
     self.class.all ||= []
     self.class.all << self
@@ -35,11 +44,5 @@ class Station
 
   def each_train(&block)
     @trains.each(&block) if block_given?
-  end
-
-  private
-
-  def validate?
-    raise ValidationError, 'Ошибка! Имя должно состоять из одного символа и без пробелов' if @name !~ NAME_FORMAT
   end
 end
